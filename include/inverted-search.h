@@ -7,9 +7,8 @@
 #include <string.h>
 #include <fcntl.h>
 #include <unistd.h>
-#include <errno.h>
 
-#define FILENAME_SIZE 128
+#define FILENAME_SIZE 256
 #define WORD_SIZE 64
 #define ALPHA_COUNT 26
 
@@ -26,26 +25,24 @@ typedef enum ret_type {
 } ret_type_e;
 
 typedef struct filenames {
+    unsigned int file_idx;
     unsigned int wordcount;
     char name[FILENAME_SIZE];
     struct filenames *link;
 } filenames_t;
 
 typedef struct hashtable {
-    unsigned int idx;
+    unsigned int word_idx;
     char word[WORD_SIZE];
     struct hashtable *link;
     filenames_t *fname_list;
-} hashtable_t[ALPHA_COUNT];
+} hashtable_node_t;
+typedef hashtable_node_t *hashtable_t[ALPHA_COUNT];
 
-ret_type_e load_db_file(hashtable_t**);
-ret_type_e save_db_file(hashtable_t*);
-ret_type_e insert_files_db(hashtable_t**, char*[]);
-ret_type_e disp_db(hashtable_t*);
-ret_type_e search_db(hashtable_t*);
-
-unsigned int getWordCount(hashtable_t*, unsigned int);
-unsigned int getFileCount(hashtable_t*, unsigned int, unsigned int);
-ret_type_e getWord(hashtable_t*, unsigned int, unsigned int, char*);
+ret_type_e load_db_file(hashtable_t*);
+ret_type_e save_db_file(hashtable_t);
+ret_type_e insert_files_db(hashtable_t*, char*[]);
+ret_type_e disp_db(hashtable_t);
+ret_type_e search_db(hashtable_t);
 
 #endif

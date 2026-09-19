@@ -5,18 +5,23 @@ static ret_type_e validateCLI(char *[]);
 
 int main(int argc, char *argv[]) {
     uint8_t hash_modified = 0;
-    hashtable_t *table = {0};
+    hashtable_t table = {0};
     if(load_db_file(&table) != pass) {
         fprintf(stderr, "%s>> Load database failure\n", __FILE__);
         return -1;
     }
 
-    if(argc > 1 && validateCLI(argv) == pass) {
+    ret_type_e validity = validateCLI(argv);
+    if(argc > 1 && validity == pass) {
         if(insert_files_db(&table, argv) != pass) {
-            hash_modified = 1;
             fprintf(stderr, "%s>> Update database failure\n", __FILE__);
             return -1;
         }
+        hash_modified = 1;
+    }
+    else if(validity == fail) {
+        fprintf(stderr, "%s>> CLI Arguments Invalid\n", __FILE__);
+        return -1;
     }
 
     unsigned char runprog = 1;
@@ -57,16 +62,15 @@ int main(int argc, char *argv[]) {
 }
 
 static ret_type_e validateCLI(char *args[]) {
-    for(int iter = 0; args[iter] != NULL; iter++) {
-        if(strstr(args[iter], TEXTFILE_EXTENSION) != NULL) {
+    for(int iter = 1; args[iter] != NULL; iter++) {
+        if(strstr(args[iter], TEXTFILE_EXTENSION) == NULL) {
             return fail;
         }
-        int fd = open(args[iter], O_WRONLY | O_CREAT | O_EXCL, 0644);
+        int fd = open(args[iter], O_RDONLY);
         if(fd < 0) {
-            if (errno == ENOENT || errno == EACCES) {
-                return fail;
-            }
+            return fail;
         }
+        close(fd);
     }
     return pass;
 }
