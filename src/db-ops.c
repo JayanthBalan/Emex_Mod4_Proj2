@@ -14,7 +14,7 @@ ret_type_e search_db(hashtable_t ht) {
     line[strcspn(line, "\n")] = '\0';
 
     word = strtok(line, delim);
-    for(unsigned char iter = 0; word != NULL; iter++) {
+    while(word != NULL) {
         int _idx = (unsigned int)((word[0] >= 97) ? (word[0] - 97) : (word[0] - 65));
         if(_idx < 0 || _idx >= ALPHA_COUNT) {
             word = strtok(NULL, delim);
@@ -218,7 +218,7 @@ ret_type_e load_db_file(hashtable_t *hash) {
 
 static ret_type_e insert_file_db(hashtable_t *table, char *file) {
     char buffer[WORD_SIZE];
-    char delim[] = " ,;:-";
+    char delim[] = ". ,;:-";
 
     FILE *fp = fopen(file, "rb");
     if(fp == NULL) {
@@ -231,6 +231,9 @@ static ret_type_e insert_file_db(hashtable_t *table, char *file) {
     }
     while(fscanf(fp, "%63s", buffer) == 1) {
         for(char *word = strtok(buffer, delim); word != NULL; word = strtok(NULL, delim)) {
+            if((*word < 65) || (*word > 90 && *word < 97) || (*word > 122)) {
+                continue;
+            }
             if(insertWordToHash(word, table) != pass) {
                 fclose(fp);
                 return fail;
