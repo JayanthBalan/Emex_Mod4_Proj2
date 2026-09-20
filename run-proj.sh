@@ -14,8 +14,10 @@ then
         ./${target_executable} "${file_path}$1"
     fi
 else
-    echo "1
+    echo \
+    "1
      2
      darrow war KEEP chained crimes fear him her ROARED reigns rain
-      3" | ./${target_executable}
+      3" \
+    | ./${target_executable}
 fi
