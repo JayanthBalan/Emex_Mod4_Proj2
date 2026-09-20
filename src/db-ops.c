@@ -26,7 +26,7 @@ ret_type_e search_db(hashtable_t ht) {
         fprintf(stdout, "[%d] %s -", idx, word);
         
         for(hashtable_node_t *wordnode = ht[idx]; wordnode != NULL; wordnode = wordnode->link) {
-            if(strcmp(wordnode->word, word) == 0) {
+            if(strcasecmp(wordnode->word, word) == 0) {
                 flag = 1;
                 for(filenames_t *filenode = wordnode->fname_list; filenode != NULL; filenode = filenode->link) {
                     fprintf(stdout, " (%u:%s)", filenode->wordcount, filenode->name);
@@ -232,8 +232,11 @@ static ret_type_e insert_file_db(hashtable_t *table, char *file) {
     }
     while(fscanf(fp, "%63s", buffer) == 1) {
         for(char *word = strtok(buffer, delim); word != NULL; word = strtok(NULL, delim)) {
-            if((*word < 65) || (*word > 90 && *word < 97) || (*word > 122)) {
-                continue;
+            while((*word < 65) || (*word > 90 && *word < 97) || (*word > 122)) {
+                word++;
+                if(word == NULL) {
+                    continue;
+                }
             }
             if(insertWordToHash(word, table) != pass) {
                 fclose(fp);

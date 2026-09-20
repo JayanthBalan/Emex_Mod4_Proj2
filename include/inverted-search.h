@@ -7,6 +7,7 @@
 #include <string.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include <strings.h>
 
 #define FILENAME_SIZE 256
 #define WORD_SIZE 64

@@ -45,7 +45,8 @@ ret_type_e resetFileData(char *file, hashtable_t *ht) {
             filenames_t *filenode = wordnode->fname_list;
 
             while(filenode != NULL) {
-                if(strcmp(filenode->name, file) == 0) {
+                if(strcasecmp(filenode->name, file) == 0) {
+
                     if(prev_file == NULL) {
                         wordnode->fname_list = filenode->link;
                     }
@@ -70,6 +71,7 @@ ret_type_e resetFileData(char *file, hashtable_t *ht) {
             if(wordnode->fname_list == NULL) {
                 hashtable_node_t *prev_word = NULL;
                 hashtable_node_t *node = (*ht)[iter1];
+
                 while(node != NULL && node != wordnode) {
                     prev_word = node;
                     node = node->link;
@@ -79,11 +81,15 @@ ret_type_e resetFileData(char *file, hashtable_t *ht) {
                     (*ht)[iter1] = wordnode->link;
                 }
                 else {
-                    prev_word->link = wordnode->link;
-                    for(hashtable_node_t *wn = (*ht)[iter1]; wn != wordnode; wn = wn->link) {
+                    for(hashtable_node_t *wn = (*ht)[iter1];
+                        wn != wordnode;
+                        wn = wn->link) {
                         wn->word_idx--;
                     }
+
+                    prev_word->link = wordnode->link;
                 }
+
                 hashtable_node_t *next = wordnode->link;
                 free(wordnode);
                 wordnode = next;
@@ -96,7 +102,6 @@ ret_type_e resetFileData(char *file, hashtable_t *ht) {
 
     return pass;
 }
-
 ret_type_e attachFileToWord(char *word, unsigned int wc, char *fn, hashtable_t *ht) {
     int _idx = (*word >= 97) ? (*word - 97) : (*word - 65);
     if(_idx < 0 || _idx >= ALPHA_COUNT) {
@@ -105,10 +110,10 @@ ret_type_e attachFileToWord(char *word, unsigned int wc, char *fn, hashtable_t *
     unsigned int idx = (unsigned int)_idx;
 
     hashtable_node_t *_wordnode;
-    for(_wordnode = (*ht)[idx]; _wordnode != NULL && strcmp(word, _wordnode->word) != 0; _wordnode = _wordnode->link);
+    for(_wordnode = (*ht)[idx]; _wordnode != NULL && strcasecmp(word, _wordnode->word) != 0; _wordnode = _wordnode->link);
     if(wc == 0) {
         for(filenames_t *filenode = _wordnode->fname_list; filenode != NULL; filenode = filenode->link) {
-            if(strcmp(filenode->name, fn) == 0) {
+            if(strcasecmp(filenode->name, fn) == 0) {
                 filenode->wordcount++;
                 return pass;
             }
@@ -140,7 +145,7 @@ ret_type_e insertWordToHash(char *word, hashtable_t *ht) {
     unsigned int idx = (unsigned int)_idx;
 
     for(hashtable_node_t *wordnode = (*ht)[idx]; wordnode != NULL; wordnode = wordnode->link) {
-        if(strcmp(wordnode->word, word) == 0) {
+        if(strcasecmp(wordnode->word, word) == 0) {
             return pass;
         }
     }
