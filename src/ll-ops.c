@@ -32,6 +32,9 @@ unsigned int getFileCount(hashtable_t ht, unsigned int idx, unsigned int w_idx) 
 }
 
 unsigned int getWordCount(hashtable_t ht, unsigned int idx) {
+    if(ht[idx] == NULL) {
+        return 0;
+    }
     return ht[idx]->word_idx;
 }
 
@@ -47,14 +50,19 @@ ret_type_e resetFileData(char *file, hashtable_t *ht) {
                         wordnode->fname_list = filenode->link;
                     }
                     else {
-                        prev_file->link = filenode->link;
-                        for(filenames_t *fn = wordnode->fname_list; fn != filenode; fn = fn->link) {
+                        for(filenames_t *fn = wordnode->fname_list;
+                            fn != filenode;
+                            fn = fn->link) {
                             fn->file_idx--;
                         }
+
+                        prev_file->link = filenode->link;
                     }
+
                     free(filenode);
                     break;
                 }
+
                 prev_file = filenode;
                 filenode = filenode->link;
             }

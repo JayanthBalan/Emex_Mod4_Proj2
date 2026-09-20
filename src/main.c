@@ -29,7 +29,11 @@ int main(int argc, char *argv[]) {
         fprintf(stdout, "Database Options\n");
         fprintf(stdout, "1. Display Database\n2. Search Database\n3. Close Database\n");
         unsigned char option;
-        fscanf(stdin, "%hhu", &option);
+        if(fscanf(stdin, "%hhu", &option) != 1) {
+            fprintf(stderr, "%s>>> Invalid Option\n", __FILE__);
+            while(getchar() != '\n');
+            continue;
+        }
         switch(option) {
             case 1:
                 if(disp_db(table) != pass) {

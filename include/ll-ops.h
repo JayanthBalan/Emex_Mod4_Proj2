@@ -3,6 +3,7 @@
 #define LL_OPS_H
 
 #include "inverted-search.h"
+#include <stdlib.h>
 
 unsigned int getWordCount(hashtable_t, unsigned int);
 unsigned int getFileCount(hashtable_t, unsigned int, unsigned int);

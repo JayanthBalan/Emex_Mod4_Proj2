@@ -54,8 +54,9 @@ ret_type_e disp_db(hashtable_t ht) {
             for(filenames_t *filenode = wordnode->fname_list; filenode != NULL; filenode = filenode->link) {
                 fprintf(stdout, " (%u:%s)", filenode->wordcount, filenode->name);
             }
-            fprintf(stdout, "\n");
+            fprintf(stdout, "\t");
         }
+        fprintf(stdout, "\n");
     }
 
     return pass;
